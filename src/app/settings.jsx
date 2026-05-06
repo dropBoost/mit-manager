@@ -1,0 +1,122 @@
+import { FaHome, FaPhotoVideo } from "react-icons/fa";
+import { RiCake2Fill, RiMoneyEuroCircleFill } from "react-icons/ri";
+import { TbCashRegister } from "react-icons/tb";
+import { LuNotebookTabs } from "react-icons/lu";
+import { MdOutlineAssignment } from "react-icons/md";
+import { IoIosSettings } from "react-icons/io";
+import { FaWhatsappSquare, FaPhoneSquareAlt, FaEnvelope, FaInstagramSquare, FaFacebookSquare, FaTiktok } from "react-icons/fa";
+
+//ICONE SOCIAL
+
+const iconMap = {
+  socialFacebook: <FaFacebookSquare/>,
+  socialInstagram: <FaInstagramSquare />,
+  socialTikTok: <FaTiktok />,
+  socialMail: <FaEnvelope />,
+  socialWhatsapp: <FaWhatsappSquare/>,
+  socialTel: <FaPhoneSquareAlt />,
+};
+
+// FOOTER SIGN
+
+export const poweredBy = "powered 💜 dropboost.it"
+export const description = "HI-PHOTO | sito e gestionale per fotografi"
+export const version = "2.5.0"
+
+// MANAGER MODULE
+
+export const navManager = [
+  {
+    title: "Manager",
+    icon: FaHome,
+    isActive: true,
+    url: "/manager",
+    level: ["admin", "superadmin"],
+  },
+  {
+    title: "Odini",
+    icon: FaPhotoVideo,
+    isActive: true,
+    items: [
+      { title: "Categorie", url: "/manager/gallery/category-management" },
+      { title: "Crea Gallery", url: "/manager/gallery/create-gallery" },
+      { title: "Aggiungi Media", url: "/manager/gallery/add-items" },
+      { title: "Gestione Gallery", url: "/manager/gallery/gallery-management" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+  {
+    title: "Fornitori",
+    icon: FaPhotoVideo,
+    isActive: true,
+    items: [
+      { title: "Categorie", url: "/manager/gallery/category-management" },
+      { title: "Crea Gallery", url: "/manager/gallery/create-gallery" },
+      { title: "Aggiungi Media", url: "/manager/gallery/add-items" },
+      { title: "Gestione Gallery", url: "/manager/gallery/gallery-management" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+  {
+    title: "Prodotti",
+    icon: RiCake2Fill,
+    isActive: true,
+    items: [
+      { title: "Crea Evento", url: "/manager/event/create-event" },
+      { title: "Aggiungi Media", url: "/manager/event/add-items-event" },
+      { title: "Gestione Eventi", url: "/manager/event/event-management" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+  {
+    title: "Sedi",
+    icon: TbCashRegister,
+    isActive: true,
+    items: [
+      { title: "Servizi", url: "/manager/work/servizi" },
+      { title: "Anagrafica", url: "/manager/work/anagrafica" },
+      { title: "Redazione", url: "/manager/work/redazione" },
+      { title: "Preventivi", url: "/manager/work/preventivi" },
+      { title: "Contratti", url: "/manager/work/contratti" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+  {
+    title: "Spedizioni",
+    icon: RiMoneyEuroCircleFill,
+    isActive: true,
+    items: [
+      { title: "Analisi", url: "/manager/finanza/analisi" },
+      { title: "Schede Clienti", url: "/manager/finanza/schede-clienti" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+  {
+    title: "Agenda",
+    icon: LuNotebookTabs,
+    isActive: true,
+    items: [
+      { title: "Calendario", url: "/manager/agenda/calendario" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+  {
+    title: "Richieste",
+    icon: MdOutlineAssignment,
+    isActive: true,
+    items: [
+      { title: "Contatti", url: "/manager/richieste/contatti" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+  {
+    title: "Impostazioni",
+    icon: IoIosSettings,
+    isActive: true,
+    items: [
+      { title: "Impostazioni", url: "/manager/settings" },
+      { title: "Abilita Utenza", url: "/manager/settings/register" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+];
