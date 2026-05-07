@@ -45,4 +45,5 @@ export async function signupAction(formData) {
   }
 
   redirect("/login?registered=true");
+  
 }

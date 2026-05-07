@@ -1,26 +1,69 @@
+'use client'
+
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from "@/components/ui/combobox"
 import { Input } from "@/components/ui/input";
 import { signupAction } from "../action/signupAction";
-import { createSupabaseServerClient } from "@/utils/supabase/server";
+import { createSupabaseBrowserClient } from "@/utils/supabase/client";
+import { DialogSuperAdminPassword } from "@/components/dialogSuperAdminPassword";
 
-export async function SignupForm({ className, ...props }) {
+export function SignupForm({ className, ...props }) {
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseBrowserClient();
+  const [searchPrefix, setSearchPrefix] = useState("");
+  const [phonePrefix, setPhonePrefix] = useState("");
+  const [ruoli, setRuoli] = useState([]);
+  const [stato, setStato] = useState([]);
 
-  const { data: ruoli, error: errorRuoli } = await supabase
-    .from("ruolo")
-    .select("*")
-    .order("ruolo", { ascending: true });
+  useEffect(() => {
+    async function fetchRuoli() {
+      const { data, error } = await supabase
+        .from("ruolo")
+        .select("*")
+        .order("ruolo", { ascending: true });
 
-  if (errorRuoli) {
-    console.error("Errore recupero ruoli:", errorRuoli.message);
-  }
+      if (error) {
+        console.error("Errore recupero ruoli:", error.message);
+        return;
+      }
 
-  console.log(ruoli)
+      setRuoli(data || []);
+    }
+
+    fetchRuoli();
+  }, []);
+
+  useEffect(() => {
+    async function fetchStati() {
+      const { data, error } = await supabase
+        .from("cod_stato")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) {
+        console.error("Errore recupero stati:", error.message);
+        return;
+      }
+
+      setStato(data || []);
+    }
+
+    fetchStati();
+  }, []);
+
+  const statiFiltrati = (stato || []).filter((item) => {
+    const search = String(searchPrefix || "").toLowerCase();
+
+    return (
+      String(item.phone_prefix || "").toLowerCase().includes(search) ||
+      String(item.stato || "").toLowerCase().includes(search)
+    );
+  });
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -59,6 +102,38 @@ export async function SignupForm({ className, ...props }) {
                   Useremo queste informazioni per contattarti e per l'accesso alla piattaforma.
                 </FieldDescription>
               </Field>
+
+              <Combobox
+                items={stato || []}
+                value={phonePrefix || ""}
+                onValueChange={(value) => {
+                  const safeValue = value || "";
+                  const item = (stato || []).find((s) => s.phone_prefix === safeValue);
+
+                  setPhonePrefix(safeValue);
+                  setSearchPrefix(
+                    item ? `${item.phone_prefix || ""} | ${item.stato || ""}` : safeValue
+                  );
+                }}
+              >
+                <ComboboxInput
+                  placeholder="Seleziona prefisso"
+                  value={searchPrefix || ""}
+                  onChange={(e) => setSearchPrefix(e.target.value)}
+                />
+
+                <ComboboxContent>
+                  <ComboboxEmpty>Nessun prefisso trovato.</ComboboxEmpty>
+
+                  <ComboboxList>
+                    {statiFiltrati.map((item) => (
+                      <ComboboxItem key={item.id} value={item.phone_prefix}>
+                        {item.phone_prefix} | {item.stato}
+                      </ComboboxItem>
+                    ))}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
 
               <Field>
                 <FieldLabel htmlFor="nome">Nome</FieldLabel>
