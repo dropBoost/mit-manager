@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { FaPlus } from "react-icons/fa";
+import { Plus } from "lucide-react";
 
 export function DialogGeneric({ label, data, title, description, labelClose }) {
 
@@ -12,7 +12,7 @@ export function DialogGeneric({ label, data, title, description, labelClose }) {
     <Dialog>
       <DialogTrigger asChild>
         <Button type="button" size={isPlus ? "icon" : "default"}>
-          {isPlus ? <FaPlus /> : label}
+          {isPlus ? <Plus /> : label}
         </Button>
       </DialogTrigger>
 

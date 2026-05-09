@@ -38,10 +38,7 @@ export const navManager = [
     icon: FaPhotoVideo,
     isActive: true,
     items: [
-      { title: "Crea Ordine", url: "/manager/gallery/category-management" },
-      { title: "Ordini", url: "/manager/gallery/create-gallery" },
-      { title: "Aggiungi Media", url: "/manager/gallery/add-items" },
-      { title: "Gestione Gallery", url: "/manager/gallery/gallery-management" },
+      { title: "Gestione", url: "/manager/ordini/gestione" },
     ],
     level: ["admin", "superadmin"],
   },

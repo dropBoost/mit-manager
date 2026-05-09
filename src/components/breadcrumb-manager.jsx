@@ -2,21 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator} from "@/components/ui/breadcrumb";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { ToggleDarkMode } from "./ui/toggle-dark-mode";
 
 export default function BreadcrumbNav() {
+  
   const pathname = usePathname();
 
   const segments = pathname
@@ -24,7 +16,7 @@ export default function BreadcrumbNav() {
     .filter(Boolean);
 
   return (
-    <header className="flex flex-row justify-between h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 px-4 bg-primary text-neutral-100! rounded-b-2xl mx-2 mb-3">
+    <header className="flex flex-row justify-between h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 px-4 bg-primary text-neutral-100! rounded-b-xl mx-3 mb-3">
       <div className="flex flex-1 items-center gap-2">
         <SidebarTrigger className="-ml-1" />
 

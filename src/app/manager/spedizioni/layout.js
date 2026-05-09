@@ -1,6 +1,6 @@
 import BreadcrumbNav from "@/components/breadcrumb-manager";
 
-export default function LAYOUTprodotti ({children}) {
+export default function LAYOUTspedizioni ({children}) {
   return (
     <>
     <BreadcrumbNav/>
