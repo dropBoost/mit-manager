@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 
-export default async function PAGEmanager () {
+export default async function PAGEfornitori () {
 
   return (
     <>

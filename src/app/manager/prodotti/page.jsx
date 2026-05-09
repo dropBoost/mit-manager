@@ -1,19 +1,20 @@
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 
-export default async function PAGEmanager () {
+export default async function PAGEprodotti () {
 
   return (
     <>
     <section className="flex flex-col gap-5">
       <div className="w-full flex flex-row items-end justify-between">
-        <span>Fornitori</span>
+        <span>Prodotti</span>
       </div>
       <Separator/>
       <div className="w-full">
         <div className="grid lg:grid-cols-6 grid-cols-2 gap-3">
           <ButtonComponentsMenu label="Anagrafica"/>
-          <ButtonComponentsMenu label="Schede"/>
+          <ButtonComponentsMenu label="Categorie"/>
+          <ButtonComponentsMenu label="Listini"/>
         </div>
       </div>
     </section>

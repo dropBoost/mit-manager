@@ -1,4 +1,3 @@
-import { DialogGeneric } from "@/components/dialogGeneric";
 import { ListaProdotti } from "../components/list-prodotti";
 import { getProdotto } from "@/utils/dataDB/getProdotto";
 import { Button } from "@/components/ui/button";

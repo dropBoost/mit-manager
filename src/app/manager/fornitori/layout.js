@@ -1,6 +1,7 @@
 import BreadcrumbNav from "@/components/breadcrumb-manager";
 
-export default function LAYOUTfornitori ({children}) {
+export default async function LAYOUTfornitori ({children}) {
+
   return (
     <>
     <BreadcrumbNav/>
