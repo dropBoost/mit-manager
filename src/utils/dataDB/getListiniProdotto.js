@@ -5,8 +5,18 @@ export async function getListiniProdotto() {
 
   const { data, error } = await supabase
     .from("listino_prodotto")
-    .select("*")
-    .eq("attivo", true);
+    .select(`
+      *,
+      prodotto:prodotto (
+        id,
+        nome,
+        codice_prodotto,
+        brand,
+        prezzo_riferimento,
+        prezzo_vendita
+      )
+    `)
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Errore Recupero Listini:", error.message);

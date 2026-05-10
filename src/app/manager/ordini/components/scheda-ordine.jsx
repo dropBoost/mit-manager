@@ -3,11 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getCorrieri } from "@/utils/dataDB/getCorrieri";
 import { getSpedizioneOrdineById } from "@/utils/dataDB/getSpedizioniOrdineByID";
+import { getProdotto } from "@/utils/dataDB/getProdotto";
 import { FormOrdineSpedizione } from "./form-ordine-spedizione";
+import { FormOrdineRiga } from "./form-ordine-riga";
 import { PopoverTracking } from "./popover-tracking";
 
 export default async function SchedaOrdine({ ordine }) {
 
+  const prodotti = await getProdotto()
   const spedizioniOrdine = await getSpedizioneOrdineById(ordine.id)
   const righe = ordine?.righe || [];
   const corrieri = await getCorrieri()
@@ -75,7 +78,14 @@ export default async function SchedaOrdine({ ordine }) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Righe ordine</CardTitle>
+          <div className="flex flex-row items-center justify-between">
+            <CardTitle>Righe ordine</CardTitle>
+            <DialogGeneric disabledStatus={ordine.stato_ordine === "CPL" || ordine.stato_ordine === "LVR"} label={`Aggiungi Prodotto +`} data={<FormOrdineRiga
+              idOrdine={ordine.id}
+              prodotti={prodotti}
+              indirizzoSpedizione={indirizzoSpedizione}
+            />} title={`"`}/>
+          </div>
         </CardHeader>
 
         <CardContent>

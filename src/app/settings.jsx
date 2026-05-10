@@ -58,7 +58,7 @@ export const navManager = [
     isActive: true,
     items: [
       { title: "Anagrafica", url: "/manager/prodotti/anagrafica" },
-      { title: "Categorie", url: "/manager/prodotti/categorie" },
+      { title: "Classificazione", url: "/manager/prodotti/classificazione" },
       { title: "Listini", url: "/manager/prodotti/listini" },
     ],
     level: ["admin", "superadmin"],

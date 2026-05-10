@@ -4,18 +4,17 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toggleBooleanRecordAction } from "./toggleBooleanRecordAction";
+import { toggleStatoOrdineAction } from "../action/toggleStatoOrdineAction";
 
-export function ToggleBooleanRecordButton({
+export function ToggleStatoOrdine({
   tableName,
   idField = "id",
   id,
-  booleanField,
+  updateField,
   currentValue,
   iconTrue = <Power className="h-4 w-4" />,
   iconFalse = <Power className="h-4 w-4" />,
-  labelFalse = "Non attivo",
-  labelTrue = "Attivo",
+  label = "Attivo",
   pathToRevalidate = "/manager/fornitori-anagrafica",
   setUpdate
 }) {
@@ -25,17 +24,18 @@ export function ToggleBooleanRecordButton({
   function handleToggle() {
 
     startTransition(async () => {
-      const result = await toggleBooleanRecordAction({
+
+      const result = await toggleStatoOrdineAction({
         tableName,
         idField,
         id,
-        booleanField,
+        updateField,
         currentValue,
         pathToRevalidate,
       });
 
       if (result.success) {
-        {setUpdate && setUpdate(count => count+1)}
+        setUpdate(count => count+1)
         toast.success(result.message);
       } else {
         toast.error(result.message);
@@ -43,17 +43,23 @@ export function ToggleBooleanRecordButton({
     });
   }
 
+  const icon = currentValue !== "CPL" ? iconFalse : iconTrue
+  let colorBg = "secondary"
+
+  if (currentValue == "LVR") {
+    colorBg = "destructive"
+  } else if (currentValue == "CPL") {
+    colorBg = "default"
+  }
+
   return (
-    <Button
-      type="button"
-      variant={currentValue ? "default" : "secondary"}
+    <Button type="button" variant={colorBg}
       size="sm"
       disabled={pending}
       onClick={handleToggle}
       className="gap-2"
     >
-      
-      {currentValue ? <>{iconTrue} {labelTrue}</> : <>{iconFalse} {labelFalse}</>}
+      {icon} {label}
     </Button>
   );
 }

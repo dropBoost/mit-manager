@@ -2,20 +2,35 @@
 
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
+import { getSpedizioneOrdineById } from "@/utils/dataDB/getSpedizioniOrdineByID";
+import { getOrdineCountProductByOrderID } from "@/utils/dataDB/getOrdiniCountProductByOrderID";
+import { toast } from "sonner";
 
 export async function createOrdineSpedizioneAction(prevState, formData) {
-  const supabase = await createSupabaseServerClient();
 
+  const supabase = await createSupabaseServerClient();
   const id_ordine = formData.get("id_ordine")?.trim();
   const id_ordine_riga = formData.get("id_ordine_riga")?.trim();
   const cod_corriere = formData.get("cod_corriere")?.trim();
   const tracking = formData.get("tracking")?.trim() || null;
   const costo_spedizione = formData.get("costo_spedizione");
+  const spedizioniOrdine = await getSpedizioneOrdineById(id_ordine)
+  const numeroProdottiOrdine = await getOrdineCountProductByOrderID(id_ordine)
+  const numeroSpedizioni = spedizioniOrdine?.length || 0
+
+  if (numeroProdottiOrdine > 0 && numeroSpedizioni >= numeroProdottiOrdine) return
 
   if (!id_ordine || !id_ordine_riga || !cod_corriere || !costo_spedizione) {
     return {
       success: false,
       message: "Compila tutti i campi obbligatori.",
+    };
+  }
+
+  if (numeroProdottiOrdine > 0 && numeroSpedizioni >= numeroProdottiOrdine) {
+    return {
+      success: false,
+      message: "Tutti i prodotti dell'ordine risultano già spediti.",
     };
   }
 
@@ -32,6 +47,22 @@ export async function createOrdineSpedizioneAction(prevState, formData) {
       success: false,
       message: error.message,
     };
+  }
+
+  const nuovoNumeroSpedizioni = numeroSpedizioni + 1;
+
+  if (numeroProdottiOrdine > 0 && nuovoNumeroSpedizioni >= numeroProdottiOrdine) {
+    const { error: updateError } = await supabase
+      .from("ordine")
+      .update({ stato_ordine: "CPL" })
+      .eq("id", id_ordine);
+
+    if (updateError) {
+      return {
+        success: false,
+        message: updateError.message,
+      };
+    }
   }
 
   revalidatePath("/manager/ordini");

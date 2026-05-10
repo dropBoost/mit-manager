@@ -1,22 +1,28 @@
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import BreadcrumbNav from "@/components/breadcrumb-manager";
+import Image from "next/image";
 
 export default async function PAGEmanager () {
 
   return (
     <>
-    <section className="flex flex-col gap-5">
-      <div className="w-full flex flex-row items-end justify-between">
-        <span>Fornitori</span>
+    <BreadcrumbNav/>
+    <main className="flex flex-col flex-1 px-3 pb-4">
+      <section className="flex flex-col gap-5 border h-full rounded-2xl p-5">
+      <div className="w-full flex flex-row items-end justify-center">
+        <Image src={`/logo.png`} width={50} height={50} unoptimized/>
       </div>
-      <Separator/>
+      <Separator className={`bg-primary `}/>
       <div className="w-full">
         <div className="grid lg:grid-cols-6 grid-cols-2 gap-3">
-          <ButtonComponentsMenu label="Anagrafica"/>
-          <ButtonComponentsMenu label="Schede"/>
+          {/* <ButtonComponentsMenu label="Anagrafica"/>
+          <ButtonComponentsMenu label="Schede"/> */}
         </div>
       </div>
     </section>
+    </main>
+    
     </>
   )
 }

@@ -3,31 +3,19 @@
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
-const allowedTables = [
-  "fornitore_prodotto",
-  "prodotto",
-  "categoria_prodotto",
-  "supercategoria_prodotto",
-  "listino_prodotto",
-  "notifiche",
-  "ordine",
-];
+const allowedTables = ["ordine"];
 
-const allowedFields = [
-  "attivo",
-  "in_lavorazione",
-  "completato",
-];
+const allowedFields = ["stato_ordine"];
 
-export async function toggleBooleanRecordAction({
+export async function toggleStatoOrdineAction({
   tableName,
   idField = "id",
   id,
-  booleanField,
+  updateField,
   currentValue,
   pathToRevalidate,
 }) {
-  if (!tableName || !idField || !id || !booleanField) {
+  if (!tableName || !idField || !id || !updateField || !currentValue) {
     return {
       success: false,
       message: "Dati mancanti.",
@@ -41,10 +29,23 @@ export async function toggleBooleanRecordAction({
     };
   }
 
-  if (!allowedFields.includes(booleanField)) {
+  if (!allowedFields.includes(updateField)) {
     return {
       success: false,
       message: "Campo non autorizzato.",
+    };
+  }
+
+  let setValue;
+
+  if (currentValue === "CRT") {
+    setValue = "LVR";
+  } else if (currentValue === "LVR") {
+    setValue = "CRT";
+  } else {
+    return {
+      success: false,
+      message: "Questo stato non può essere modificato manualmente.",
     };
   }
 
@@ -53,7 +54,7 @@ export async function toggleBooleanRecordAction({
   const { error } = await supabase
     .from(tableName)
     .update({
-      [booleanField]: !currentValue,
+      [updateField]: setValue,
     })
     .eq(idField, id);
 
@@ -71,5 +72,6 @@ export async function toggleBooleanRecordAction({
   return {
     success: true,
     message: "Stato aggiornato correttamente.",
+    value: setValue,
   };
 }

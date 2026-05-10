@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 
-export function DialogGeneric({ label, data, title, description, labelClose }) {
+export function DialogGeneric({ label, data, title, description, labelClose, disabledStatus = false }) {
 
   const isPlus = label === "plus";
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type="button" size={isPlus ? "icon" : "default"}>
+        <Button type="button" size={isPlus ? "icon" : "default"} disabled={disabledStatus}>
           {isPlus ? <Plus /> : label}
         </Button>
       </DialogTrigger>
