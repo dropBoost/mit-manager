@@ -10,6 +10,7 @@ const allowedTables = [
   "supercategoria_prodotto",
   "listino_prodotto",
   "notifiche",
+  "franchisee",
 ];
 
 export async function deleteRecordAction({ tableName, idField = "id", id, pathToRevalidate }) {

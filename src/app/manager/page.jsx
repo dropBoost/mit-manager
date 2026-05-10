@@ -11,7 +11,7 @@ export default async function PAGEmanager () {
     <main className="flex flex-col flex-1 px-3 pb-4">
       <section className="flex flex-col gap-5 border h-full rounded-2xl p-5">
       <div className="w-full flex flex-row items-end justify-center">
-        <Image src={`/logo.png`} width={50} height={50} unoptimized/>
+        <Image src={`/logo.png`} width={50} height={50} unoptimized alt={"logo"}/>
       </div>
       <Separator className={`bg-primary `}/>
       <div className="w-full">

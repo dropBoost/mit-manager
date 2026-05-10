@@ -114,6 +114,15 @@ export function FormOrdineSpedizione({ idOrdine, idOrdineRiga, corrieri = [] }) 
             value={idOrdineRiga || ""}
           />
 
+          <div className="space-y-2">
+            <Label htmlFor="tracking">Data di Consegna</Label>
+            <Input
+              type="date"
+              id="data_consegna"
+              name="data_consegna"
+            />
+          </div>
+
           <ComboboxField
             name="cod_corriere"
             label="Corriere"

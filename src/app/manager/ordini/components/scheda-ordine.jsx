@@ -5,6 +5,7 @@ import { getCorrieri } from "@/utils/dataDB/getCorrieri";
 import { getSpedizioneOrdineById } from "@/utils/dataDB/getSpedizioniOrdineByID";
 import { getProdotto } from "@/utils/dataDB/getProdotto";
 import { FormOrdineSpedizione } from "./form-ordine-spedizione";
+import { formatDate } from "@/utils/functions/date/dataFormatter";
 import { FormOrdineRiga } from "./form-ordine-riga";
 import { PopoverTracking } from "./popover-tracking";
 
@@ -101,6 +102,7 @@ export default async function SchedaOrdine({ ordine }) {
                   <TableHead>Unità</TableHead>
                   <TableHead className="text-right">Prezzo</TableHead>
                   <TableHead className="text-right">Totale</TableHead>
+                  <TableHead className="text-right">Data di Consegna</TableHead>
                   <TableHead className="text-right">Tracking</TableHead>
                 </TableRow>
               </TableHeader>
@@ -128,6 +130,9 @@ export default async function SchedaOrdine({ ordine }) {
                         </TableCell>
                         <TableCell className="text-right">
                           € {totaleRiga.toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatDate(riga.data_consegna) || "non disponibile"}
                         </TableCell>
                         <TableCell className="text-right">
                           {spedizione ? <PopoverTracking label={spedizione.tracking || "evaso"} data={spedizione}/> :
