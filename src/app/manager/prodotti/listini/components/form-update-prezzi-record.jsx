@@ -23,7 +23,7 @@ function SubmitButton() {
   return (
     <Button type="submit" disabled={pending} className="w-full gap-2 md:w-auto">
       {pending && <Spinner data-icon="inline-start" />}
-      {pending ? "Aggiornamento..." : "Aggiorna prezzi"}
+      {pending ? "Aggiornamento..." : "Aggiorna Listino"}
     </Button>
   );
 }
@@ -34,6 +34,7 @@ export function FormUpdatePrezziRecord({
   id,
   prezzoRiferimento,
   prezzoVendita,
+  minimoOrdine,
   pathToRevalidate = "/manager/listini",
 }) {
   const [state, formAction] = useActionState(
@@ -48,11 +49,7 @@ export function FormUpdatePrezziRecord({
           <input type="hidden" name="tableName" value={tableName} />
           <input type="hidden" name="idField" value={idField} />
           <input type="hidden" name="id" value={id} />
-          <input
-            type="hidden"
-            name="pathToRevalidate"
-            value={pathToRevalidate}
-          />
+          <input type="hidden" name="pathToRevalidate" value={pathToRevalidate} />
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="space-y-2">
@@ -84,6 +81,22 @@ export function FormUpdatePrezziRecord({
                 min="0"
                 required
                 defaultValue={prezzoVendita || 0}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="minimo_ordine">
+                Minimo d'Ordine <span className="text-destructive">*</span>
+              </Label>
+
+              <Input
+                id="minimo_ordine"
+                name="minimo_ordine"
+                type="number"
+                step="1"
+                min="1"
+                required
+                defaultValue={minimoOrdine || 1}
               />
             </div>
           </div>

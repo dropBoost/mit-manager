@@ -18,9 +18,8 @@ export default async function PAGEordiniGestione () {
 
   const sediOptions = sedi.map((item) => ({
     value: item.id,
-    label: `${item.franchisee?.ragione_sociale || "Sede"} - ${
-      item.localita || item.citta || item.indirizzo || item.id
-    }`,
+    label: `${item.citta || "Sede"}  ${
+      item.localita || ""} - ${item.franchisee?.ragione_sociale}`,
   }));
 
   return (
@@ -40,7 +39,6 @@ export default async function PAGEordiniGestione () {
           listini={listini}
           indirizzi={indirizzi}
         />
-        {/* <ListaProdotti prodotti={prodotti}/> */}
       </div>
     </section>
     </>

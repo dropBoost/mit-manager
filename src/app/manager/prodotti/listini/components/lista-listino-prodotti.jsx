@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown, Search, Pen } from "lucide-react";
+import { Check, ChevronsUpDown, Search, Pen, ShoppingBasket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -134,8 +134,8 @@ export function ListaListinoProdotti({ sedi = [], listini = [] }) {
                   <TableHead className="w-36">EAN</TableHead>
                   <TableHead className="w-36">SKU</TableHead>
                   <TableHead>Prodotto</TableHead>
-                  <TableHead className="w-36 text-right">
-                    Prezzo riferimento
+                  <TableHead className="w-36 text-center justify-items-center">
+                    Minimo Ordine
                   </TableHead>
                   <TableHead className="w-36 text-right">
                     Prezzo vendita
@@ -172,13 +172,11 @@ export function ListaListinoProdotti({ sedi = [], listini = [] }) {
                           {item.prodotto?.nome || "-"}
                         </TableCell>
 
-
+                        <TableCell className="text-center">
+                          {item.minimo_ordine || "-"} {item.prodotto.unita || "-"}
+                        </TableCell>
 
                         
-
-                        <TableCell className="text-right">
-                          € {Number(item.prezzo_riferimento || 0).toFixed(2)}
-                        </TableCell>
 
                         <TableCell className="text-right">
                           € {Number(item.prezzo_vendita || 0).toFixed(2)}
@@ -194,6 +192,7 @@ export function ListaListinoProdotti({ sedi = [], listini = [] }) {
                                 tableName="listino_prodotto"
                                 idField="id"
                                 id={item.id}
+                                minimoOrdine={item.minimo_ordine}
                                 prezzoRiferimento={item.prezzo_riferimento}
                                 prezzoVendita={item.prezzo_vendita}
                                 pathToRevalidate="/manager/listini"

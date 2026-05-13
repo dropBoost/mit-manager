@@ -186,6 +186,9 @@ export function FormListinoProdottoBulk({
                     <TableHead className="w-44 text-right">
                       Prezzo vendita
                     </TableHead>
+                    <TableHead className="w-44 text-right">
+                      Minimo d'Ordine
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
 
@@ -228,6 +231,18 @@ export function FormListinoProdottoBulk({
                             min="0"
                             required
                             defaultValue={prodotto.prezzo_vendita || 0}
+                            className="text-right"
+                          />
+                        </TableCell>
+
+                        <TableCell>
+                          <Input
+                            name={`minimo_ordine_${prodotto.id}`}
+                            type="number"
+                            step="1"
+                            min="1"
+                            required
+                            defaultValue={1}
                             className="text-right"
                           />
                         </TableCell>

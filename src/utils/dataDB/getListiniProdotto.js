@@ -13,7 +13,8 @@ export async function getListiniProdotto() {
         codice_prodotto,
         brand,
         prezzo_riferimento,
-        prezzo_vendita
+        prezzo_vendita,
+        unita
       )
     `)
     .order("created_at", { ascending: false });

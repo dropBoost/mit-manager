@@ -32,14 +32,14 @@ function SubmitButton() {
   );
 }
 
-function Field({ name, label, required = false, type = "text", colspan }) {
+function Field({ name, label, required = false, type = "text", colspan, step }) {
   return (
     <div className={`space-y-2 ${colspan || ""}`}>
       <Label htmlFor={name}>
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
 
-      <Input id={name} name={name} type={type} required={required} />
+      <Input id={name} name={name} type={type} required={required} step={step}/>
     </div>
   );
 }
@@ -191,6 +191,7 @@ export function FormProdotto({ unita = [], fornitori = [], categorie = [], brand
                 name="prezzo_riferimento"
                 label="Prezzo riferimento"
                 type="number"
+                step="0.01"
                 required
                 colspan="md:col-span-3"
               />
@@ -199,6 +200,7 @@ export function FormProdotto({ unita = [], fornitori = [], categorie = [], brand
                 name="prezzo_vendita"
                 label="Prezzo vendita"
                 type="number"
+                step="0.01"
                 required
                 colspan="md:col-span-3"
               />
@@ -207,6 +209,7 @@ export function FormProdotto({ unita = [], fornitori = [], categorie = [], brand
                 name="costo_acquisto"
                 label="Costo acquisto"
                 type="number"
+                step="0.01"
                 required
                 colspan="md:col-span-3"
               />

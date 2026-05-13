@@ -17,11 +17,11 @@ export function NavUser({ user }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.avatar} alt={user?.name} />
-                <AvatarFallback className="rounded-lg">{user?.name.slice(0,1)}{user?.surname.slice(0,1)}</AvatarFallback>
+                <AvatarImage src={user?.avatar} alt={user?.nome} />
+                <AvatarFallback className="rounded-lg">{user?.nome.slice(0,1)}{user?.cognome.slice(0,1)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user?.name} {user?.surname}</span>
+                <span className="truncate font-medium">{user?.nome} {user?.cognome}</span>
                 <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -31,11 +31,11 @@ export function NavUser({ user }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
-                  <AvatarFallback className="rounded-lg">{user?.name.slice(0,1)}{user?.surname.slice(0,1)}</AvatarFallback>
+                  <AvatarImage src={user?.nome} alt={user?.nome} />
+                  <AvatarFallback className="rounded-lg">{user?.nome.slice(0,1)}{user?.cognome.slice(0,1)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user?.name} {user?.surname}</span>
+                  <span className="truncate font-medium">{user?.nome} {user?.cognome}</span>
                   <span className="truncate text-xs">{user?.email}</span>
                 </div>
               </div>

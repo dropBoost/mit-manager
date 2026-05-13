@@ -9,6 +9,7 @@ import { FaCircle } from "react-icons/fa";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
 import Image from "next/image"
 import { Separator } from "./ui/separator"
+import { version } from "@/app/settings"
 
 const data = {
   softwareDrop: [
@@ -20,10 +21,11 @@ const data = {
   ],
 }
 
-export function AppSidebar( { profilo, settings }) {
+export function AppSidebar( { user, settings }) {
 
-  const logo = settings?.logoDarl != "#" ? settings?.logoDark : false
-
+  const logo = "/logo.png"
+  console.log("user", user)
+  
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -39,7 +41,7 @@ export function AppSidebar( { profilo, settings }) {
                   alt={settings?.companyName || "Logo"}
                 />
               ) : null}
-              <span className="text-xs font-semibold">{settings?.companyName || ""}</span>
+              <span className="text-xs font-semibold">MIT-MANAGER {version}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -50,7 +52,7 @@ export function AppSidebar( { profilo, settings }) {
         <NavProjects projects={data.softwareDrop} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={profilo} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

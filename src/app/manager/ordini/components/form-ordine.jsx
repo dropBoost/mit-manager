@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useMemo, useState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { Check, ChevronsUpDown, Trash2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
-
+import Image from "next/image";
 import { createOrdineAction } from "../action/createOrdineAction";
 
 import { cn } from "@/lib/utils";
@@ -13,27 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-} from "@/components/ui/table";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 
 const initialState = {
   success: false,
@@ -55,18 +37,55 @@ function SubmitButton({ disabled }) {
   );
 }
 
-function ComboboxField({
-  label,
-  value,
-  onChange,
-  options = [],
-  placeholder = "Seleziona",
-  required = false,
-  disabled = false,
-  colspan = "",
-}) {
-  const [open, setOpen] = useState(false);
+function ComboboxFieldImage({ label, value, onChange, options = [], placeholder = "Seleziona", required = false, disabled = false, colspan = "" }) {
 
+  const [open, setOpen] = useState(false);
+  const selected = options.find((item) => item.value === value);
+
+  return (
+    <div className={`space-y-2 ${colspan}`}>
+      <Label>
+        {label} {required && <span className="text-destructive">*</span>}
+      </Label>
+
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            role="combobox"
+            disabled={disabled}
+            className="w-full justify-between"
+          >
+            {selected ? selected.label : placeholder}
+            <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+
+        <PopoverContent className="w-[--radix-popover-trigger-width] bg-primary p-2">
+          <Command>
+            <CommandInput placeholder="Cerca..." />
+            <CommandList>
+              <CommandEmpty>Nessun risultato trovato.</CommandEmpty>
+              <CommandGroup>
+                {options.map((item) => (
+                  <CommandItem key={item.value} value={item.label} onSelect={() => {onChange(item.value); setOpen(false);}}>
+                    {item?.immagine ? <Image width={60} height={60} alt={`${item?.nome}`} src={`${item.immagine}`} className="aspect-square object-cover rounded-2xl"/> : <Image width={60} height={60} alt={"logo placeholder"} src={`/logo.png`} className="aspect-square object-cover rounded-2xl"Fior/>}
+                    {item.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+}
+
+function ComboboxField({ label, value, onChange, options = [], placeholder = "Seleziona", required = false, disabled = false, colspan = "" }) {
+
+  const [open, setOpen] = useState(false);
   const selected = options.find((item) => item.value === value);
 
   return (
@@ -97,6 +116,7 @@ function ComboboxField({
               <CommandGroup>
                 {options.map((item) => (
                   <CommandItem
+                    className={`hover:bg-primary/40 data-selected:bg-primary/20`}
                     key={item.value}
                     value={item.label}
                     onSelect={() => {
@@ -104,12 +124,6 @@ function ComboboxField({
                       setOpen(false);
                     }}
                   >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === item.value ? "opacity-100" : "opacity-0"
-                      )}
-                    />
                     {item.label}
                   </CommandItem>
                 ))}
@@ -122,21 +136,16 @@ function ComboboxField({
   );
 }
 
-export function FormOrdine({
-  idAccount = null,
-  sedi = [],
-  indirizzi = [],
-  prodotti = [],
-  listini = [],
-}) {
-  const [state, formAction] = useActionState(createOrdineAction, initialState);
+export function FormOrdine({ idAccount = null, sedi = [], indirizzi = [], prodotti = [], listini = [] }) {
 
+  const [state, formAction] = useActionState(createOrdineAction, initialState);
   const [selectedSede, setSelectedSede] = useState("");
   const [selectedIndirizzo, setSelectedIndirizzo] = useState("");
   const [selectedProdotto, setSelectedProdotto] = useState("");
   const [quantita, setQuantita] = useState("1");
   const [note, setNote] = useState("");
   const [righe, setRighe] = useState([]);
+  const [minimoOrdine, setMinimoOrdine] = useState(0)
 
   const indirizziSede = useMemo(() => {
     if (!selectedSede) return [];
@@ -182,6 +191,7 @@ export function FormOrdine({
             prodotto.codice_prodotto ? `(${prodotto.codice_prodotto})` : ""
           }`,
           prodotto,
+          immagine: prodotto.immagine,
           listino: item,
         };
       })
@@ -193,6 +203,13 @@ export function FormOrdine({
   const selectedProdottoData = prodottiDisponibili.find(
     (item) => item.value === selectedProdotto
   );
+
+  useEffect(() => {
+    const minimo = Number(selectedProdottoData?.listino?.minimo_ordine || 1);
+
+    setMinimoOrdine(minimo);
+    setQuantita(String(minimo));
+  }, [selectedProdottoData]);
 
   const selectedIndirizzoData = indirizziSede.find(
     (item) => item.value === selectedIndirizzo
@@ -257,7 +274,7 @@ export function FormOrdine({
   }, 0);
 
   return (
-    <Card>
+    <Card className={`bg-neutral-100 dark:bg-neutral-900`}>
       <CardContent>
         <form action={formAction} className="space-y-8">
           <input type="hidden" name="id_sede" value={selectedSede} />
@@ -290,7 +307,7 @@ export function FormOrdine({
               colspan="md:col-span-6"
             />
 
-            <ComboboxField
+            <ComboboxFieldImage
               label="Prodotto"
               value={selectedProdotto}
               onChange={setSelectedProdotto}
@@ -310,8 +327,8 @@ export function FormOrdine({
               <Input
                 id="quantita"
                 type="number"
-                step="1"
-                min="1"
+                step={minimoOrdine || 1}
+                min={minimoOrdine || 1}
                 value={quantita}
                 onChange={(e) => setQuantita(e.target.value)}
               />

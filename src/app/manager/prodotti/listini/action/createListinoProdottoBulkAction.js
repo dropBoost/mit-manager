@@ -64,8 +64,13 @@ export async function createListinoProdottoBulkAction(prevState, formData) {
       formData.get(`prezzo_vendita_${id_prodotto}`)
     );
 
+    const minimo_ordine = Number(
+      formData.get(`minimo_ordine_${id_prodotto}`)
+    );
+
     if (
       Number.isNaN(prezzo_riferimento) ||
+      Number.isNaN(minimo_ordine) ||
       Number.isNaN(prezzo_vendita)
     ) {
       return {
@@ -86,8 +91,7 @@ export async function createListinoProdottoBulkAction(prevState, formData) {
       id_prodotto,
       prezzo_riferimento,
       prezzo_vendita,
-      sconto: null,
-      tipologia_sconto: null,
+      minimo_ordine,
       attivo: true,
     });
   }

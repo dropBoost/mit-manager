@@ -23,6 +23,7 @@ export async function updatePrezziRecordAction(prevState, formData) {
 
   const prezzo_riferimento = Number(formData.get("prezzo_riferimento"));
   const prezzo_vendita = Number(formData.get("prezzo_vendita"));
+  const minimo_ordine = Number(formData.get("minimo_ordine"));
 
   if (!tableName || !idField || !id) {
     return {
@@ -40,6 +41,7 @@ export async function updatePrezziRecordAction(prevState, formData) {
 
   if (
     Number.isNaN(prezzo_riferimento) ||
+    Number.isNaN(minimo_ordine) ||
     Number.isNaN(prezzo_vendita)
   ) {
     return {
@@ -58,6 +60,7 @@ export async function updatePrezziRecordAction(prevState, formData) {
   const payload = {
     prezzo_riferimento,
     prezzo_vendita,
+    minimo_ordine,
   };
 
   const { error } = await supabase
@@ -78,6 +81,6 @@ export async function updatePrezziRecordAction(prevState, formData) {
 
   return {
     success: true,
-    message: "Prezzi aggiornati correttamente.",
+    message: "Listino aggiornato correttamente.",
   };
 }
