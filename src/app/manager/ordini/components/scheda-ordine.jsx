@@ -8,10 +8,14 @@ import { FormOrdineSpedizione } from "./form-ordine-spedizione";
 import { formatDate } from "@/utils/functions/date/dataFormatter";
 import { FormOrdineRiga } from "./form-ordine-riga";
 import { PopoverTracking } from "./popover-tracking";
+import { DialogDocumentsOrdiniFornitore } from "@/components/dialogDocumentsOrdiniFornitore";
+import { getListiniProdottoSedeByID } from "@/utils/dataDB/getListiniProdottoSedeByID";
 
 export default async function SchedaOrdine({ ordine }) {
 
+  const sede = ordine?.id_sede
   const prodotti = await getProdotto()
+  const listinoSede = await getListiniProdottoSedeByID(sede)
   const spedizioniOrdine = await getSpedizioneOrdineById(ordine.id)
   const righe = ordine?.righe || [];
   const corrieri = await getCorrieri()
@@ -20,6 +24,7 @@ export default async function SchedaOrdine({ ordine }) {
   }, 0);
 
   const indirizzoSpedizione = ordine?.righe[0]?.indirizzo_spedizione
+
   const sedeLabel =
     ordine?.sede?.franchisee?.ragione_sociale ||
     ordine?.sede?.citta ||
@@ -39,6 +44,40 @@ export default async function SchedaOrdine({ ordine }) {
         ? `${item.nome_corriere} (${item.cod})`
         : item.cod,
   }));
+
+  const fornitoriMap = new Map();
+
+  ordine.righe.forEach((riga) => {
+    const idFornitore = riga.prodotto?.id_fornitore || riga.id_fornitore;
+    const nomeFornitore =
+      riga.prodotto?.fornitore?.ragione_sociale || riga.fornitore_nome;
+
+    if (!fornitoriMap.has(idFornitore)) {
+      fornitoriMap.set(idFornitore, {
+        id_fornitore: idFornitore,
+        fornitore_nome: nomeFornitore,
+        id_ordine: ordine.id,
+        righe: [],
+      });
+    }
+
+    fornitoriMap.get(idFornitore).righe.push(riga);
+  });
+
+  const fornitoriUniciOrdine = Array.from(fornitoriMap.values());
+
+  
+  const prodottiListinoSede = prodotti.map((pl) => {
+    
+    const listinoProdotto = listinoSede.find((l) => l.id_prodotto == pl.id);
+    
+    return {
+      ...pl,
+      prezzo_vendita: listinoProdotto?.prezzo_vendita ?? pl.prezzo_vendita,
+      minimo_ordine: listinoProdotto?.minimo_ordine || 1,
+    };
+    
+  })
 
   if (!ordine) {
     return (
@@ -81,11 +120,20 @@ export default async function SchedaOrdine({ ordine }) {
         <CardHeader>
           <div className="flex flex-row items-center justify-between">
             <CardTitle>Righe ordine</CardTitle>
-            <DialogGeneric disabledStatus={ordine.stato_ordine === "CPL" || ordine.stato_ordine === "LVR"} label={`Aggiungi Prodotto +`} data={<FormOrdineRiga
+            <DialogGeneric disabledStatus={ordine.stato_ordine === "CPL" || ordine.stato_ordine === "LVR"} label={`Aggiungi Prodotto +`}
+              data={
+              <FormOrdineRiga
               idOrdine={ordine.id}
-              prodotti={prodotti}
-              indirizzoSpedizione={indirizzoSpedizione}
-            />} title={`"`}/>
+              prodotti={prodottiListinoSede}
+              indirizzoSpedizione={indirizzoSpedizione}/>}
+              title={`Aggiungi Prodotto`}
+            />
+            <DialogDocumentsOrdiniFornitore
+              label="Documenti"
+              ordine={ordine}
+              data={fornitoriUniciOrdine}
+              title="Stampa Ordini Fornitore"
+            />
           </div>
         </CardHeader>
 

@@ -84,6 +84,16 @@ export const navManager = [
     level: ["admin", "superadmin"],
   },
   {
+    title: "Documenti",
+    icon: RiMoneyEuroCircleFill,
+    isActive: true,
+    items: [
+      { title: "Ordini", url: "/manager/documenti/ordini" },
+      { title: "Ordini Fornitore", url: "/manager/documenti/ordini-fornitore" },
+    ],
+    level: ["admin", "superadmin"],
+  },
+  {
     title: "Settings",
     icon: LuNotebookTabs,
     isActive: true,

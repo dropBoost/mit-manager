@@ -17,7 +17,17 @@ export async function getOrdineById(id) {
           ragione_sociale
         )
       ),
-      righe:ordine_riga (*)
+      righe:ordine_riga (
+        *,
+        prodotto:prodotto (
+          id,
+          id_fornitore,
+          fornitore:fornitore_prodotto (
+            id,
+            ragione_sociale
+          )
+        )
+      )
     `)
     .eq("id", id)
     .single();

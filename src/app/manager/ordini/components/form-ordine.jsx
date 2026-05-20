@@ -70,7 +70,7 @@ function ComboboxFieldImage({ label, value, onChange, options = [], placeholder 
               <CommandGroup>
                 {options.map((item) => (
                   <CommandItem key={item.value} value={item.label} onSelect={() => {onChange(item.value); setOpen(false);}}>
-                    {item?.immagine ? <Image width={60} height={60} alt={`${item?.nome}`} src={`${item.immagine}`} className="aspect-square object-cover rounded-2xl"/> : <Image width={60} height={60} alt={"logo placeholder"} src={`/logo.png`} className="aspect-square object-cover rounded-2xl"Fior/>}
+                    {item?.immagine ? <Image width={60} height={60} alt={`${item?.nome}`} src={`${item.immagine}`} className="aspect-square object-cover rounded-2xl"/> : <Image width={60} height={60} alt={"logo placeholder"} src={`/logo.png`} className="aspect-square object-cover rounded-2xl"/>}
                     {item.label}
                   </CommandItem>
                 ))}

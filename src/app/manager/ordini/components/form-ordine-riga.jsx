@@ -1,43 +1,62 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { useMemo, useState, useTransition, useEffect } from "react";
+import { Search } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { postOrdineRigaAction } from "../action/postOrdineRigaAction";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 export function FormOrdineRiga({ idOrdine, prodotti = [], indirizzoSpedizione = "" }) {
 
-  const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState("");
-  const [quantita, setQuantita] = useState(1);
+  const [search, setSearch] = useState("");
   const [prezzo, setPrezzo] = useState("");
   const [sconto, setSconto] = useState(0);
   const [tipologiaSconto, setTipologiaSconto] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [minimoOrdine, setMinimoOrdine] = useState(1)
+  const [quantita, setQuantita] = useState(1);
 
   const prodottoSelezionato = useMemo(() => {
     return prodotti.find((item) => item.id === selectedId);
   }, [prodotti, selectedId]);
 
+  const prodottiFiltrati = useMemo(() => {
+    const term = search.toLowerCase().trim();
+
+    if (!term) return prodotti;
+
+    return prodotti.filter((prodotto) => {
+      return (
+        prodotto.nome?.toLowerCase().includes(term) ||
+        prodotto.codice?.toLowerCase().includes(term) ||
+        prodotto.codice_prodotto?.toLowerCase().includes(term) ||
+        prodotto.sku?.toLowerCase().includes(term) ||
+        prodotto.ean?.toLowerCase().includes(term)
+      );
+    });
+  }, [prodotti, search]);
+
   function handleSelectProduct(id) {
     const prodotto = prodotti.find((item) => item.id === id);
 
     setSelectedId(id);
-    setOpen(false);
 
     if (prodotto) {
       setPrezzo(prodotto.prezzo ?? "");
       setQuantita(1);
       setSconto(0);
-      setTipologiaSconto(null);
+      setTipologiaSconto("");
     }
   }
 
+  useEffect(() => {
+    setMinimoOrdine(prodottoSelezionato?.minimo_ordine ?? 1);
+    setQuantita(prodottoSelezionato?.minimo_ordine ?? 1)
+  }, [prodottoSelezionato]);
+  console.log(prodottoSelezionato)
   function handleSubmit(formData) {
     startTransition(async () => {
       const result = await postOrdineRigaAction(formData);
@@ -50,139 +69,149 @@ export function FormOrdineRiga({ idOrdine, prodotti = [], indirizzoSpedizione = 
       toast.success(result.message);
 
       setSelectedId("");
+      setSearch("");
       setQuantita(1);
       setPrezzo("");
-      setSconto("");
+      setSconto(0);
       setTipologiaSconto("");
     });
   }
 
   return (
     <form action={handleSubmit} className="space-y-4">
+
       <input type="hidden" name="id_ordine" value={idOrdine ?? ""} />
       <input type="hidden" name="id_prodotto" value={prodottoSelezionato?.id ?? ""} />
       <input type="hidden" name="nome_prodotto" value={prodottoSelezionato?.nome ?? ""} />
-      <input type="hidden" name="codice_prodotto" value={prodottoSelezionato?.codice_prodotto ?? ""} />
+      <input type="hidden" name="codice_prodotto" value={prodottoSelezionato?.codice_prodotto ?? prodottoSelezionato?.codice ?? ""} />
       <input type="hidden" name="sku" value={prodottoSelezionato?.sku ?? ""} />
       <input type="hidden" name="ean" value={prodottoSelezionato?.ean ?? ""} />
       <input type="hidden" name="unita" value={prodottoSelezionato?.unita ?? ""} />
       <input type="hidden" name="aliquota_iva" value={prodottoSelezionato?.aliquota_iva ?? ""} />
       <input type="hidden" name="indirizzo_spedizione" value={indirizzoSpedizione ?? ""} />
+      <input type="hidden" name="tipologia_sconto" value={tipologiaSconto ?? ""} />
 
       <div className="grid gap-4 md:grid-cols-12">
-        <div className="md:col-span-5">
-          <label className="mb-2 block text-sm font-medium">
-            Prodotto
-          </label>
+        {/* COLONNA SINISTRA */}
+        <div className="md:col-span-7 space-y-3">
+          <label className="text-sm font-medium">Seleziona prodotto</label>
 
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                type="button"
-                variant="outline"
-                role="combobox"
-                className="w-full justify-between"
-              >
-                {prodottoSelezionato
-                  ? `${prodottoSelezionato.nome} - ${prodottoSelezionato.codice || ""}`
-                  : "Seleziona prodotto"}
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Cerca per nome, codice, sku o ean..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
 
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
+          <div className="h-120 overflow-y-auto rounded-md border">
+            {prodottiFiltrati.length === 0 ? (
+              <div className="p-4 text-sm text-muted-foreground">
+                Nessun prodotto trovato.
+              </div>
+            ) : (
+              <div className="divide-y">
+                {prodottiFiltrati.map((prodotto) => (
+                  <button
+                    key={prodotto.id}
+                    type="button"
+                    onClick={() => handleSelectProduct(prodotto.id)}
+                    className={cn(
+                      "w-full p-3 text-left transition hover:bg-muted",
+                      selectedId === prodotto.id && "bg-muted"
+                    )}
+                  >
+                    <div className="font-medium">
+                      {prodotto.nome}
+                    </div>
 
-            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-              <Command>
-                <CommandInput placeholder="Cerca prodotto..." />
-                <CommandList>
-                  <CommandEmpty>Nessun prodotto trovato.</CommandEmpty>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      Codice: {prodotto.codice_prodotto ?? prodotto.codice ?? "-"}
+                    </div>
 
-                  <CommandGroup>
-                    {prodotti.map((prodotto) => (
-                      <CommandItem
-                        key={prodotto.id}
-                        value={`${prodotto.nome} ${prodotto.codice} ${prodotto.sku}`}
-                        onSelect={() => handleSelectProduct(prodotto.id)}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            selectedId === prodotto.id
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
+                    {prodotto.sku || prodotto.ean ?
+                    <div className="text-xs text-muted-foreground">
+                      {prodotto.sku ? `SKU: ${prodotto.sku}` : " " }
+                      {prodotto.ean ? `EAN: ${prodotto.ean}` : " " }
+                    </div> : null }
 
-                        <div className="flex flex-col">
-                          <span>{prodotto.nome}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {prodotto.codice} {prodotto.sku ? `- ${prodotto.sku}` : ""}
-                          </span>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
+                    <div className="mt-1 text-sm font-medium">
+                      € {prodotto.prezzo_vendita.toFixed(2) ?? "0.00"}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="md:col-span-2">
-          <label className="mb-2 block text-sm font-medium">
-            Quantità
-          </label>
-          <Input
-            name="quantita"
-            type="number"
-            step="1"
-            value={quantita}
-            onChange={(e) => setQuantita(e.target.value)}
-          />
-        </div>
+        {/* COLONNA DESTRA */}
+        <div className="md:col-span-5 space-y-4 rounded-md border p-4">
+          <div>
+            <h3 className="font-medium">Inserisci nell'ordine</h3>
+            <p className="text-sm text-muted-foreground">
+              Seleziona un prodotto e imposta quantità, prezzo e sconto.
+            </p>
+          </div>
 
-        <div className="md:col-span-2">
-          <label className="mb-2 block text-sm font-medium">
-            Prezzo
-          </label>
-          <Input
-            name="prezzo"
-            type="number"
-            step="0.01"
-            value={prezzo}
-            onChange={(e) => setPrezzo(e.target.value)}
-          />
-        </div>
+          {prodottoSelezionato ? (
+            <div className="rounded-md bg-muted p-3">
+              <div className="font-medium">{prodottoSelezionato.nome}</div>
+              <div className="text-xs text-muted-foreground">
+                {prodottoSelezionato.codice_prodotto ?? prodottoSelezionato.codice ?? "-"}
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+              Nessun prodotto selezionato.
+            </div>
+          )}
 
-        <div className="md:col-span-2">
-          <label className="mb-2 block text-sm font-medium">
-            Sconto
-          </label>
-          <Input
-            name="sconto"
-            type="number"
-            step="0.01"
-            value={sconto}
-            onChange={(e) => setSconto(e.target.value)}
-          />
-        </div>
+          <div>
+            <label className="mb-2 block text-sm font-medium">Quantità</label>
+            <Input
+              name="quantita"
+              type="number"
+              step={minimoOrdine}
+              min={minimoOrdine}
+              value={quantita}
+              onChange={(e) => setQuantita(e.target.value)}
+            />
+          </div>
 
-        <div className="md:col-span-1 flex items-end">
+          <div>
+            <label className="mb-2 block text-sm font-medium">Prezzo</label>
+            <Input
+              name="prezzo"
+              type="number"
+              step="0.01"
+              value={prezzo}
+              onChange={(e) => setPrezzo(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium">Sconto</label>
+            <Input
+              name="sconto"
+              type="number"
+              step="0.01"
+              value={sconto}
+              onChange={(e) => setSconto(e.target.value)}
+            />
+          </div>
+
           <Button
             type="submit"
             disabled={isPending || !prodottoSelezionato}
             className="w-full"
           >
-            +
+            {isPending ? "Salvataggio..." : "Aggiungi prodotto"}
           </Button>
         </div>
       </div>
-
-      <input
-        type="hidden"
-        name="tipologia_sconto"
-        value={tipologiaSconto}
-      />
     </form>
   );
 }

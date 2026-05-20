@@ -13,19 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
 const initialState = {
   success: false,
@@ -90,7 +79,8 @@ function ComboboxField({
 }) {
   const [open, setOpen] = useState(false);
 
-  const selected = options.find((item) => item.value === value);
+  const safeValue = value || "";
+  const selected = options.find((item) => item.value === safeValue);
 
   return (
     <div className={`space-y-2 ${colspan}`}>
@@ -98,7 +88,12 @@ function ComboboxField({
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
 
-      <input type="hidden" name={name} value={value} required={required} />
+      <input
+        type="hidden"
+        name={name}
+        value={safeValue}
+        required={required}
+      />
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -124,16 +119,10 @@ function ComboboxField({
                     key={item.value}
                     value={item.label}
                     onSelect={() => {
-                      onChange(item.value);
+                      onChange(item.value || "");
                       setOpen(false);
                     }}
                   >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === item.value ? "opacity-100" : "opacity-0"
-                      )}
-                    />
                     {item.label}
                   </CommandItem>
                 ))}
@@ -158,11 +147,13 @@ export function FormUpdateProdotto({ prodotto, aliquoteIva = [] }) {
   const ivaAcquistoInitial =
     prodotto?.ivaAcquisto?.id || prodotto?.id_aliquota_iva_acquisto || "";
 
-  const [selectedIvaVendita, setSelectedIvaVendita] =
-    useState(ivaVenditaInitial);
+  const [selectedIvaVendita, setSelectedIvaVendita] = useState(
+    ivaVenditaInitial || ""
+  );
 
-  const [selectedIvaAcquisto, setSelectedIvaAcquisto] =
-    useState(ivaAcquistoInitial);
+  const [selectedIvaAcquisto, setSelectedIvaAcquisto] = useState(
+    ivaAcquistoInitial || ""
+  );
 
   const [previewImage, setPreviewImage] = useState(prodotto?.immagine || null);
 

@@ -8,6 +8,11 @@ export default async function PAGEprodottiAnagrafica ({params}) {
   const { idprodotto } = await params;
   const prodotto = await getProdottoById(idprodotto);
   const aliquoteIva = await getAliquoteIva()
+
+  const aliquoteIvaOptions = aliquoteIva.map((item) => ({
+    value: item.id,
+    label: `${item.cod_stato} - ${item.nome}`,
+  }));
   
   return (
     <>
@@ -17,7 +22,7 @@ export default async function PAGEprodottiAnagrafica ({params}) {
         <DialogGeneric label={"plus"} data={"<FormFornitoreProdotto stati={statiFormatted}/>"} title={"Nuovo fornitore prodotto"} description={"Inserisci i dati del fornitore. I campi con * sono obbligatori"}/>
       </div>
       <div className="w-full">
-        <FormUpdateProdotto prodotto={prodotto} aliquoteIva={aliquoteIva}/>
+        <FormUpdateProdotto prodotto={prodotto} aliquoteIva={aliquoteIvaOptions}/>
       </div>
     </section>
     </>
