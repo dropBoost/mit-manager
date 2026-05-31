@@ -1,7 +1,7 @@
 import { getFornitoriProdotto } from "@/utils/dataDB/getFornitoriProdotto";
-import { ListaFornitoriDocumentiOrdini } from "../components/lista-fornitori-documenti-ordini";
+import { ListaFornitoriDocumentiOrdini } from "../components/lista-fornitori-report-ordini";
 
-export default async function PAGEordiniFornitore () {
+export default async function PAGEordini () {
 
     const fornitori = await getFornitoriProdotto();
 
@@ -9,11 +9,11 @@ export default async function PAGEordiniFornitore () {
     <>
     <section className="flex flex-col gap-5">
       <div className="w-full flex flex-row items-end justify-between">
-        <span>Ordini Fornitore</span>
+        <span>CIAO</span>
         {/* <DialogGeneric label="plus" data={<FormFranchisee stati={statiOptions} aliquoteIva={aliquoteIvaOptions}/>} title={"Nuovo Franchisee"} description={"Inserisci i dati del Franchisee"}/> */}
       </div>
       <div className="w-full">
-        <ListaFornitoriDocumentiOrdini fornitori={fornitori}/>
+        {/* <ListaFornitoriDocumentiOrdini fornitori={fornitori}/> */}
       </div>
     </section>
     </>

@@ -24,7 +24,6 @@ const data = {
 export function AppSidebar( { user, settings }) {
 
   const logo = "/logo.png"
-  console.log("user", user)
   
   return (
     <Sidebar collapsible="icon">

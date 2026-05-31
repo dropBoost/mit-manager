@@ -84,12 +84,12 @@ export const navManager = [
     level: ["admin", "superadmin"],
   },
   {
-    title: "Documenti",
+    title: "Report",
     icon: RiMoneyEuroCircleFill,
     isActive: true,
     items: [
-      { title: "Ordini", url: "/manager/documenti/ordini" },
-      { title: "Ordini Fornitore", url: "/manager/documenti/ordini-fornitore" },
+      { title: "Ordini Fornitore", url: "/manager/report/ordini-fornitore" },
+      { title: "Ordini Sede", url: "/manager/report/ordini-sede" },
     ],
     level: ["admin", "superadmin"],
   },

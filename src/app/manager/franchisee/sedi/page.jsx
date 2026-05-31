@@ -23,9 +23,6 @@ export default async function PAGEfranchiseeSedi () {
     label: item.ragione_sociale,
   }));
 
-console.log(franchisee)
-
-  
   return (
     <>
     <section className="flex flex-col gap-5">

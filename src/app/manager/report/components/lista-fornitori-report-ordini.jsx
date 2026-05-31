@@ -8,8 +8,9 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { DialogGeneric } from "@/components/dialogGeneric";
 import { FormFiltroFornitoreDate } from "./form-fornitore-date";
+import { DatabaseSearch } from "lucide-react";
 
-export function ListaFornitoriDocumentiOrdini({ fornitori = [] }) {
+export function ListaFornitoriReportOrdini({ fornitori = [], prodotti = [] }) {
 
   const [search, setSearch] = useState("");
   const [filtroAttivo, setFiltroAttivo] = useState("all");
@@ -70,7 +71,7 @@ export function ListaFornitoriDocumentiOrdini({ fornitori = [] }) {
                 <TableHead>Stato</TableHead>
                 <TableHead>Partita IVA</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Documenti</TableHead>
+                <TableHead className={`w-20 text-center`}>Report</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -95,9 +96,9 @@ export function ListaFornitoriDocumentiOrdini({ fornitori = [] }) {
 
                     <TableCell>{fornitore.email}</TableCell>
 
-                    <TableCell>
-                      <DialogGeneric label={"Doc"} title={"Elenca Riepilogo"}
-                        data={<FormFiltroFornitoreDate fornitore={fornitore}/>}
+                    <TableCell className={`text-center`}>
+                      <DialogGeneric label={<DatabaseSearch/>} title={"Elenca Riepilogo"} description={`Packing list ordini fornitore`}
+                        data={<FormFiltroFornitoreDate fornitore={fornitore} prodotti={prodotti}/>}
                       />
                     </TableCell>
                     

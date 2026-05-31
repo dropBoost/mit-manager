@@ -127,6 +127,7 @@ export default async function SchedaOrdine({ ordine }) {
               prodotti={prodottiListinoSede}
               indirizzoSpedizione={indirizzoSpedizione}/>}
               title={`Aggiungi Prodotto`}
+              description={`Aggiungi prodotti all'ordine`}
             />
             <DialogDocumentsOrdiniFornitore
               label="Documenti"
@@ -145,6 +146,7 @@ export default async function SchedaOrdine({ ordine }) {
                   <TableHead>Prodotto</TableHead>
                   <TableHead>Codice</TableHead>
                   <TableHead>SKU</TableHead>
+                  <TableHead>Fornitore</TableHead>
                   <TableHead>EAN</TableHead>
                   <TableHead>Q.tà</TableHead>
                   <TableHead>Unità</TableHead>
@@ -170,6 +172,7 @@ export default async function SchedaOrdine({ ordine }) {
                         </TableCell>
                         <TableCell>{riga.codice_prodotto || "-"}</TableCell>
                         <TableCell>{riga.sku || "-"}</TableCell>
+                        <TableCell>{riga.prodotto.fornitore.ragione_sociale || "-"}</TableCell>
                         <TableCell>{riga.ean || "-"}</TableCell>
                         <TableCell>{riga.quantita || "-"}</TableCell>
                         <TableCell>{riga.unita || "-"}</TableCell>

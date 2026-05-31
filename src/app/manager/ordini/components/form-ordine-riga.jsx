@@ -56,7 +56,7 @@ export function FormOrdineRiga({ idOrdine, prodotti = [], indirizzoSpedizione = 
     setMinimoOrdine(prodottoSelezionato?.minimo_ordine ?? 1);
     setQuantita(prodottoSelezionato?.minimo_ordine ?? 1)
   }, [prodottoSelezionato]);
-  console.log(prodottoSelezionato)
+
   function handleSubmit(formData) {
     startTransition(async () => {
       const result = await postOrdineRigaAction(formData);
@@ -75,7 +75,7 @@ export function FormOrdineRiga({ idOrdine, prodotti = [], indirizzoSpedizione = 
       setSconto(0);
       setTipologiaSconto("");
     });
-  }
+  }a
 
   return (
     <form action={handleSubmit} className="space-y-4">
@@ -128,7 +128,7 @@ export function FormOrdineRiga({ idOrdine, prodotti = [], indirizzoSpedizione = 
                     </div>
 
                     <div className="mt-1 text-xs text-muted-foreground">
-                      Codice: {prodotto.codice_prodotto ?? prodotto.codice ?? "-"}
+                      Codice: {prodotto.codice_prodotto ?? prodotto.codice ?? "-"} - <font className="uppercase italic">{prodotto.fornitore_nome}</font>
                     </div>
 
                     {prodotto.sku || prodotto.ean ?
