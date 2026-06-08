@@ -39,6 +39,7 @@ export async function createOrdineSpedizioneAction(prevState, formData) {
     id_ordine_riga,
     cod_corriere,
     tracking,
+    data_consegna,
     costo_spedizione: Number(costo_spedizione),
   });
 
@@ -49,33 +50,16 @@ export async function createOrdineSpedizioneAction(prevState, formData) {
     };
   }
 
-  const { errorData } = await supabase
-  .from("ordine_riga")
-  .update({data_consegna, data_consegna})
-  .eq("id", id_ordine_riga);
+  const { errorStatoEvasione } = await supabase
+    .from("ordine_riga")
+    .update({stato_evasione: "evaso"})
+    .eq("id", id_ordine_riga);
 
-  if (errorData) {
+  if (errorStatoEvasione) {
     return {
       success: false,
-      message: errorData.message,
+      message: errorStatoEvasione.message,
     };
-  }
-
-  const nuovoNumeroSpedizioni = numeroSpedizioni + 1;
-
-  if (numeroProdottiOrdine > 0 && nuovoNumeroSpedizioni >= numeroProdottiOrdine) {
-
-    const { error: updateError } = await supabase
-      .from("ordine")
-      .update({ stato_ordine: "CPL" })
-      .eq("id", id_ordine);
-
-    if (updateError) {
-      return {
-        success: false,
-        message: updateError.message,
-      };
-    }
   }
 
   revalidatePath("/manager/ordini");
@@ -84,4 +68,5 @@ export async function createOrdineSpedizioneAction(prevState, formData) {
     success: true,
     message: "Spedizione inserita correttamente.",
   };
+
 }

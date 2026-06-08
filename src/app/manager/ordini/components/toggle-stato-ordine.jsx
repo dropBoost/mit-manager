@@ -16,7 +16,9 @@ export function ToggleStatoOrdine({
   iconFalse = <Power className="h-4 w-4" />,
   label = "Attivo",
   pathToRevalidate = "/manager/fornitori-anagrafica",
-  setUpdate
+  setUpdate,
+  righeEvase,
+  righeOrdine
 }) {
 
   const [pending, startTransition] = useTransition();
@@ -32,6 +34,8 @@ export function ToggleStatoOrdine({
         updateField,
         currentValue,
         pathToRevalidate,
+        righeEvase,
+        righeOrdine
       });
 
       if (result.success) {

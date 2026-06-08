@@ -21,6 +21,7 @@ const initialState = {
 };
 
 function SubmitButton() {
+
   const { pending } = useFormStatus();
 
   return (
@@ -29,17 +30,11 @@ function SubmitButton() {
       {pending ? "Inserimento..." : "Registra spedizione"}
     </Button>
   );
+
 }
 
-function ComboboxField({
-  label,
-  name,
-  value,
-  onChange,
-  options = [],
-  placeholder = "Seleziona",
-  required = false,
-}) {
+function ComboboxField({ label, name, value, onChange, options = [], placeholder = "Seleziona", required = false }) {
+
   const [open, setOpen] = useState(false);
 
   const selected = options.find((item) => item.value === value);
@@ -96,6 +91,7 @@ function ComboboxField({
       </Popover>
     </div>
   );
+  
 }
 
 export function FormOrdineSpedizione({ idOrdine, idOrdineRiga, corrieri = [] }) {

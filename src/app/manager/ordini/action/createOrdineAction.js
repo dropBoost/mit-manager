@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export async function createOrdineAction(prevState, formData) {
   const supabase = await createSupabaseServerClient();
@@ -82,10 +83,7 @@ export async function createOrdineAction(prevState, formData) {
     };
   }
 
-  revalidatePath("/manager/ordini");
-
-  return {
-    success: true,
-    message: "Ordine creato correttamente.",
-  };
+  revalidatePath("/manager/ordini/gestione");
+  redirect("/manager/ordini/gestione");
+  
 }

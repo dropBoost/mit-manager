@@ -21,7 +21,7 @@ export default function ListaOrdini() {
   const [search, setSearch] = useState("");
   const [dataFiltro, setDataFiltro] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("all");
-  const [statoOrdine, setStatoOrdine] = useState("parzial");
+  const [statoOrdine, setStatoOrdine] = useState("all");
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(25);
@@ -79,7 +79,7 @@ export default function ListaOrdini() {
     setSearch("");
     setDataFiltro("");
     setSedeFiltro("all");
-    setStatoOrdine("parzial");
+    setStatoOrdine("all");
     setPage(1);
     setLimit(25);
   };
@@ -136,8 +136,8 @@ export default function ListaOrdini() {
 
                   <SelectContent className="w-full">
                     <SelectItem value="all">Tutti</SelectItem>
-                    <SelectItem value="LVR">In Lavorazione</SelectItem>
-                    <SelectItem value="parzial">In Corso</SelectItem>
+                    <SelectItem value="CRT">Nuovi</SelectItem>
+                    <SelectItem value="LVR">Working</SelectItem>
                     <SelectItem value="CPL">Completati</SelectItem>
                   </SelectContent>
                 </Select>
@@ -192,13 +192,15 @@ export default function ListaOrdini() {
             <TableHeader>
               <TableRow>
                 <TableHead className={`w-28`}>Data</TableHead>
-                <TableHead>Sede</TableHead>
+                <TableHead className="w-44">Franchisee</TableHead>
+                <TableHead className="w-full min-w-44">Sede</TableHead>
                 <TableHead className="justify-items-center w-16">
                   <ShoppingBag className="w-4 h-4" />
                 </TableHead>
-                <TableHead className="text-right">Totale</TableHead>
+                <TableHead className="text-center">Totale</TableHead>
                 <TableHead className="text-center w-16">Note</TableHead>
-                <TableHead className="text-center w-16">Stato</TableHead>
+                <TableHead className="text-center w-16">Evasione</TableHead>
+                <TableHead className="text-center w-64">Stato</TableHead>
                 <TableHead className="text-center w-16">Visualizza</TableHead>
               </TableRow>
             </TableHeader>
@@ -212,7 +214,8 @@ export default function ListaOrdini() {
                 </TableRow>
               ) : ordini.length > 0 ? (
                 ordini.map((ordine) => {
-                  const righe = ordine.righe || ordine.ordine_riga || [];
+
+                  const righe = ordine.righe || [];
 
                   const totale = righe.reduce((acc, riga) => {
                     return (
@@ -221,16 +224,23 @@ export default function ListaOrdini() {
                     );
                   }, 0);
 
-                  const sedeLabel =
-                    ordine.sede?.franchisee?.ragione_sociale ||
-                    ordine.sede?.id ||
-                    "-";
+                  const evasione = righe.reduce((acc, riga) => {
+                    if (riga.stato_evasione === "evaso") return acc + 1;
+                    if (riga.stato_evasione === "reso") return acc + 1;
 
-                  const localitaLabel =
-                    ordine.sede?.localita ||
-                    ordine.sede?.citta ||
-                    ordine.sede?.indirizzo ||
-                    "-";
+                    return acc;
+                  }, 0);
+
+                  const label_evasione = () => {
+
+                    if (evasione === righe.length) return <span className="text-neutral-500">Evaso</span>;
+                    if (evasione > 0) return <span className="text-yellow-600 border px-3 py-1 rounded-full">Parziale</span>;
+                    
+                    return <span className="text-green-600 border px-3 py-1 rounded-full">Inevaso</span>;
+                  };
+
+                  const franchisee = ordine.sede?.franchisee?.ragione_sociale || ordine.sede?.id || "-";
+                  const localita = ordine.sede?.localita || "-";
 
                   return (
                     <TableRow key={ordine.id}>
@@ -239,7 +249,11 @@ export default function ListaOrdini() {
                       </TableCell>
 
                       <TableCell className="font-medium">
-                        {sedeLabel} {localitaLabel && `- ${localitaLabel}`}
+                        {franchisee}
+                      </TableCell>
+
+                      <TableCell className="font-medium">
+                        {localita}
                       </TableCell>
 
                       <TableCell className="text-center">
@@ -263,17 +277,22 @@ export default function ListaOrdini() {
                       </TableCell>
 
                       <TableCell className="text-center">
-                        <ToggleStatoOrdine
+                        {label_evasione()}
+                      </TableCell>
+
+                      <TableCell className="text-center">
+                        <ToggleStatoOrdine 
                           tableName="ordine"
                           idField="id"
                           id={ordine.id}
                           updateField="stato_ordine"
                           currentValue={ordine.stato_ordine}
-                          label={ordine.stato.alias}
-                          iconTrue={<CircleCheck />}
-                          iconFalse={<Circle/>}
                           setUpdate={setUpdate}
-                          pathToRevalidate="/manager/ordini/gestione/gestione-ordine"
+                          label={ordine.stato.alias}
+                          iconTrue={<CircleCheck/>}
+                          iconFalse={<Circle/>}
+                          righeEvase={evasione}
+                          righeOrdine={righe.length}
                         />
                       </TableCell>
 

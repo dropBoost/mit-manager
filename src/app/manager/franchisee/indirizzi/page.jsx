@@ -18,15 +18,12 @@ export default async function PAGEfranchiseeIndirizzi () {
   ]);
 
   const sediOptions = sedi.map((item) => ({
-  value: item.id,
-  label: `${item.franchisee?.ragione_sociale || "Sede"} - ${
-    item.localita || item.citta || item.indirizzo || item.id
-  }`,
-}));
+    value: item.id,
+    label: `${item.franchisee?.ragione_sociale || "Sede"} - ${
+      item.localita || item.citta || item.indirizzo || item.id
+    }`,
+  }));
 
-console.log(franchisee)
-
-  
   return (
     <>
     <section className="flex flex-col gap-5">

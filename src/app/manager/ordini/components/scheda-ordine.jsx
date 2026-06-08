@@ -1,8 +1,8 @@
 import { DialogGeneric } from "@/components/dialogGeneric";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { X } from "lucide-react";
 import { getCorrieri } from "@/utils/dataDB/getCorrieri";
-import { getSpedizioneOrdineById } from "@/utils/dataDB/getSpedizioniOrdineByID";
 import { getProdotto } from "@/utils/dataDB/getProdotto";
 import { FormOrdineSpedizione } from "./form-ordine-spedizione";
 import { formatDate } from "@/utils/functions/date/dataFormatter";
@@ -10,13 +10,14 @@ import { FormOrdineRiga } from "./form-ordine-riga";
 import { PopoverTracking } from "./popover-tracking";
 import { DialogDocumentsOrdiniFornitore } from "@/components/dialogDocumentsOrdiniFornitore";
 import { getListiniProdottoSedeByID } from "@/utils/dataDB/getListiniProdottoSedeByID";
+import { ButtonDeleteOrder } from "./button-delete-order";
+import { ButtonDeleteRiga } from "./button-delete-riga";
 
 export default async function SchedaOrdine({ ordine }) {
 
   const sede = ordine?.id_sede
   const prodotti = await getProdotto()
   const listinoSede = await getListiniProdottoSedeByID(sede)
-  const spedizioniOrdine = await getSpedizioneOrdineById(ordine.id)
   const righe = ordine?.righe || [];
   const corrieri = await getCorrieri()
   const totale = righe.reduce((acc, riga) => {
@@ -24,17 +25,8 @@ export default async function SchedaOrdine({ ordine }) {
   }, 0);
 
   const indirizzoSpedizione = ordine?.righe[0]?.indirizzo_spedizione
-
-  const sedeLabel =
-    ordine?.sede?.franchisee?.ragione_sociale ||
-    ordine?.sede?.citta ||
-    "-";
-
-  const localitaLabel =
-    ordine?.sede?.localita ||
-    ordine?.sede?.citta ||
-    ordine?.sede?.indirizzo ||
-    "-";
+  const franchisee = ordine?.sede?.franchisee?.ragione_sociale || "-";
+  const localitaLabel = ordine?.sede?.localita || "-";
 
   const corrieriOptions = corrieri
     .filter((item) => item.attivo === true)
@@ -47,10 +39,10 @@ export default async function SchedaOrdine({ ordine }) {
 
   const fornitoriMap = new Map();
 
-  ordine.righe.forEach((riga) => {
+  ordine?.righe.forEach((riga) => {
+
     const idFornitore = riga.prodotto?.id_fornitore || riga.id_fornitore;
-    const nomeFornitore =
-      riga.prodotto?.fornitore?.ragione_sociale || riga.fornitore_nome;
+    const nomeFornitore = riga.prodotto?.fornitore?.ragione_sociale || riga.fornitore_nome;
 
     if (!fornitoriMap.has(idFornitore)) {
       fornitoriMap.set(idFornitore, {
@@ -66,7 +58,6 @@ export default async function SchedaOrdine({ ordine }) {
 
   const fornitoriUniciOrdine = Array.from(fornitoriMap.values());
 
-  
   const prodottiListinoSede = prodotti.map((pl) => {
     
     const listinoProdotto = listinoSede.find((l) => l.id_prodotto == pl.id);
@@ -106,7 +97,7 @@ export default async function SchedaOrdine({ ordine }) {
                 : "-"
             }
           />
-          <InfoRow label="Sede" value={sedeLabel} />
+          <InfoRow label="Franchisee" value={franchisee} />
           <InfoRow label="Indirizzo Spedizione" value={indirizzoSpedizione} />
           <InfoRow label="Località" value={localitaLabel} />
 
@@ -120,7 +111,7 @@ export default async function SchedaOrdine({ ordine }) {
         <CardHeader>
           <div className="flex flex-row items-center justify-between">
             <CardTitle>Righe ordine</CardTitle>
-            <DialogGeneric disabledStatus={ordine.stato_ordine === "CPL" || ordine.stato_ordine === "LVR"} label={`Aggiungi Prodotto +`}
+            <DialogGeneric disabledStatus={ordine.stato_ordine === "CPL"} label={`Aggiungi Prodotto +`}
               data={
               <FormOrdineRiga
               idOrdine={ordine.id}
@@ -129,12 +120,20 @@ export default async function SchedaOrdine({ ordine }) {
               title={`Aggiungi Prodotto`}
               description={`Aggiungi prodotti all'ordine`}
             />
-            <DialogDocumentsOrdiniFornitore
-              label="Documenti"
-              ordine={ordine}
-              data={fornitoriUniciOrdine}
-              title="Stampa Ordini Fornitore"
-            />
+            <div className="flex flex-row gap-1">
+              <DialogDocumentsOrdiniFornitore
+                label="Documenti"
+                ordine={ordine}
+                data={fornitoriUniciOrdine}
+                title="Stampa Ordini Fornitore"
+              />
+              <ButtonDeleteOrder
+                tableName="ordine"
+                idField="id"
+                id={ordine?.id}
+                productRow={righe?.length}
+              />
+            </div>
           </div>
         </CardHeader>
 
@@ -154,17 +153,18 @@ export default async function SchedaOrdine({ ordine }) {
                   <TableHead className="text-right">Totale</TableHead>
                   <TableHead className="text-right">Data di Consegna</TableHead>
                   <TableHead className="text-right">Tracking</TableHead>
+                  <TableHead className="flex justify-center items-center text-red-800"><X className="h-3 w-3" /></TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
                 {righe.length > 0 ? (
                   righe.map((riga) => {
-                    const totaleRiga =
-                      Number(riga.prezzo || 0) * Number(riga.quantita || 0);
 
-                    const spedizione = spedizioniOrdine.find((s) => s.id_ordine_riga == riga.id)
-
+                    const totaleRiga = Number(riga.prezzo || 0) * Number(riga.quantita || 0);
+                    const spedizione = riga.evasione[0] || []
+                    const tracking = spedizione?.tracking
+                    
                     return (
                       <TableRow key={riga.id}>
                         <TableCell className="font-medium">
@@ -183,13 +183,19 @@ export default async function SchedaOrdine({ ordine }) {
                           € {totaleRiga.toFixed(2)}
                         </TableCell>
                         <TableCell className="text-right">
-                          {formatDate(riga.data_consegna) || "non disponibile"}
+                          {formatDate(spedizione.data_consegna) || "non disponibile"}
                         </TableCell>
                         <TableCell className="text-right">
-                          {spedizione ? <PopoverTracking label={spedizione.tracking || "evaso"} data={spedizione}/> :
-                          <DialogGeneric label="EVADI" title={`Evadi ${riga.nome_prodotto}`}
-                              description={`Evadendo il prodotto risulterà spedito`}
-                              data={<FormOrdineSpedizione idOrdine={ordine.id} idOrdineRiga={riga.id} corrieri={corrieriOptions} />}/>}
+                          {riga.stato_evasione == "evaso" ? 
+                          <PopoverTracking label={tracking || "evaso"} data={spedizione}/> :
+                          <DialogGeneric label="Evadi" title={`Evadi ${riga.nome_prodotto}`}
+                            description={`Evadendo il prodotto risulterà spedito`}
+                            data={<FormOrdineSpedizione idOrdine={ordine.id} idOrdineRiga={riga.id} corrieri={corrieriOptions} />}
+                          />
+                          }
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <ButtonDeleteRiga idRiga={riga.id} statoEvasione={riga.stato_evasione} statoOrdine={ordine.stato_ordine} pathToRevalidate={`/manager/ordini/gestione/gestione-ordine/${ordine.id}`}/>
                         </TableCell>
                       </TableRow>
                     );

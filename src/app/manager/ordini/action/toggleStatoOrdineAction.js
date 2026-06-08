@@ -14,6 +14,8 @@ export async function toggleStatoOrdineAction({
   updateField,
   currentValue,
   pathToRevalidate,
+  righeEvase,
+  righeOrdine
 }) {
   if (!tableName || !idField || !id || !updateField || !currentValue) {
     return {
@@ -41,8 +43,15 @@ export async function toggleStatoOrdineAction({
   if (currentValue === "CRT") {
     setValue = "LVR";
   } else if (currentValue === "LVR") {
-    setValue = "CRT";
-  } else {
+    if (righeOrdine === righeEvase){
+      setValue = "CPL";
+    } else {
+      return {
+      success: false,
+      message: "Non puoi completare un ordine non completamente evaso",
+    };
+    }
+  } else if (currentValue === "CPL") {
     return {
       success: false,
       message: "Questo stato non può essere modificato manualmente.",

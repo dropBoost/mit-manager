@@ -28,22 +28,7 @@ export async function getOrdiniQuery({
           ragione_sociale
         )
       ),
-      righe:ordine_riga (
-        id,
-        id_prodotto,
-        nome_prodotto,
-        codice_prodotto,
-        quantita,
-        unita,
-        prezzo,
-        sconto,
-        tipologia_sconto,
-        aliquota_iva,
-        sku,
-        ean,
-        indirizzo_spedizione,
-        created_at
-      ),
+      righe:ordine_riga (*),
       stato:stato_avanzamento_ordine (*)
     `,
       { count: "exact" }

@@ -19,6 +19,7 @@ export async function getOrdineById(id) {
       ),
       righe:ordine_riga (
         *,
+        evasione:ordine_spedizioni(*),
         prodotto:prodotto (
           id,
           id_fornitore,

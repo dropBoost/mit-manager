@@ -1,10 +1,5 @@
-import { FaHome, FaPhotoVideo } from "react-icons/fa";
-import { RiCake2Fill, RiMoneyEuroCircleFill } from "react-icons/ri";
-import { TbCashRegister } from "react-icons/tb";
-import { LuNotebookTabs } from "react-icons/lu";
-import { MdOutlineAssignment } from "react-icons/md";
-import { IoIosSettings } from "react-icons/io";
 import { FaWhatsappSquare, FaPhoneSquareAlt, FaEnvelope, FaInstagramSquare, FaFacebookSquare, FaTiktok } from "react-icons/fa";
+import { Pizza, Factory, Wheat, Store, Truck, PackageSearch, Settings, House, ReceiptText } from "lucide-react";
 
 //ICONE SOCIAL
 
@@ -28,14 +23,14 @@ export const version = "2.5.0"
 export const navManager = [
   {
     title: "Manager",
-    icon: FaHome,
+    icon: House,
     isActive: true,
     url: "/manager",
     level: ["admin", "superadmin"],
   },
   {
     title: "Odini",
-    icon: FaPhotoVideo,
+    icon: Pizza,
     isActive: true,
     items: [
       { title: "Gestione", url: "/manager/ordini/gestione" },
@@ -44,7 +39,7 @@ export const navManager = [
   },
   {
     title: "Fornitori",
-    icon: FaPhotoVideo,
+    icon: Factory,
     isActive: true,
     items: [
       { title: "Anagrafica", url: "/manager/fornitori/anagrafica" },
@@ -54,7 +49,7 @@ export const navManager = [
   },
   {
     title: "Prodotti",
-    icon: RiCake2Fill,
+    icon: Wheat,
     isActive: true,
     items: [
       { title: "Anagrafica", url: "/manager/prodotti/anagrafica" },
@@ -65,7 +60,7 @@ export const navManager = [
   },
   {
     title: "Franchisee",
-    icon: TbCashRegister,
+    icon: Store,
     isActive: true,
     items: [
       { title: "Franchisee", url: "/manager/franchisee/franchisee"},
@@ -76,7 +71,7 @@ export const navManager = [
   },
   {
     title: "Spedizioni",
-    icon: RiMoneyEuroCircleFill,
+    icon: Truck,
     isActive: true,
     items: [
       { title: "Corrieri", url: "/manager/spedizioni/corrieri" },
@@ -85,7 +80,7 @@ export const navManager = [
   },
   {
     title: "Report",
-    icon: RiMoneyEuroCircleFill,
+    icon: PackageSearch,
     isActive: true,
     items: [
       { title: "Ordini Fornitore", url: "/manager/report/ordini-fornitore" },
@@ -95,7 +90,7 @@ export const navManager = [
   },
   {
     title: "Settings",
-    icon: LuNotebookTabs,
+    icon: Settings,
     isActive: true,
     items: [
       { title: "Aliquote IVA", url: "/manager/settings/aliquote-iva" },
@@ -105,7 +100,7 @@ export const navManager = [
   },
   {
     title: "Richieste",
-    icon: MdOutlineAssignment,
+    icon: ReceiptText,
     isActive: true,
     items: [
       { title: "Contatti", url: "/manager/richieste/contatti" },
@@ -114,7 +109,7 @@ export const navManager = [
   },
   {
     title: "Impostazioni",
-    icon: IoIosSettings,
+    icon: Settings,
     isActive: true,
     items: [
       { title: "Impostazioni", url: "/manager/settings" },
